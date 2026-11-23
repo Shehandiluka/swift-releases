@@ -1,0 +1,31 @@
+# Publishes installers pushed on an "upload/*" branch as GitHub Releases, then deletes the branch.
+# Branch layout: upload/<tag>  containing  incoming/<file>.part000, .part001 ...  (split because git refuses files > 100 MB)
+name: Publish release
+on:
+  push:
+    branches: ['upload/**']
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Join parts and create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME#upload/}"
+          cd incoming
+          for first in *.part000; do
+            f="${first%.part000}"
+            cat "$f".part* > "$f"
+            ls -la "$f"; sha256sum "$f"
+          done
+          FILES=$(ls | grep -v '\.part[0-9]*$')
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --notes "Installer for Swift Hub ($TAG)" --latest=false
+          gh release upload "$TAG" $FILES --clobber
+      - name: Delete upload branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: git push origin --delete "${GITHUB_REF_NAME}"
