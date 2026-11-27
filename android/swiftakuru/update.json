@@ -1,0 +1,11 @@
+{
+ "version": "1.0.0",
+ "build": 3,
+ "apk": "https://raw.githubusercontent.com/Shehandiluka/swift-releases/main/android/swiftakuru/SwiftAkuru.apk",
+ "sha256": "9a19e6d5ff0e4aa5d7ac64499932176e254fba0579af71bb6de2350e721fcb81",
+ "notes": [
+  "පළමු Android version එක: Singlish, Wijesekara, English",
+  "වචන 80,000ක dictionary + ඔබෙන් ඉගෙන ගන්නා suggestions",
+  "Themes, Emoji, Clipboard, උත්සව animations"
+ ]
+}
